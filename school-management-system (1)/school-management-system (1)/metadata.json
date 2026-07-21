@@ -1,6 +1,0 @@
-{
-  "name": "School Management System",
-  "description": "نظام إدارة مدرسة متكامل يربط بين المدير والأستاذ والطالب ببيانات تفاعلية وبوابة ألعاب تعليمية.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
