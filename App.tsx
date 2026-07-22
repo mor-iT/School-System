@@ -6,11 +6,11 @@
 import React, { useState, useEffect } from "react";
 import { RefreshCw, RotateCcw } from "lucide-react";
 import { SchoolData, Student, Teacher, Director, ClassSession, Assignment, Announcement, AttendanceRecord, GradeRecord, SchoolSettings } from "./types";
-import LoginPortal from "./components/LoginPortal";
-import StudentDashboard from "./components/StudentDashboard";
-import TeacherDashboard from "./components/TeacherDashboard";
-import DirectorDashboard from "./components/DirectorDashboard";
-import GamesPortal from "./components/GamesPortal";
+import LoginPortal from "./LoginPortal";
+import StudentDashboard from "./StudentDashboard";
+import TeacherDashboard from "./TeacherDashboard";
+import DirectorDashboard from "./DirectorDashboard";
+import GamesPortal from "./GamesPortal";
 import { getSchoolData, saveSchoolData, resetSchoolData } from "./lib/firebase";
 
 // Recalculate ranks based on gamePoints
