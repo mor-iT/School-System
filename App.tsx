@@ -552,7 +552,7 @@ export default function App() {
           
           {/* Logo & Info */}
           <div className="flex items-center gap-3">
-   <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm overflow-hidden shrink-0 border border-slate-700">
+  <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm overflow-hidden shrink-0 border border-slate-700">
   {(data.settings?.logoPath || data.settings?.school_logo) ? (
     <img 
       src={data.settings?.logoPath || data.settings?.school_logo} 
