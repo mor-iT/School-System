@@ -552,9 +552,17 @@ export default function App() {
           
           {/* Logo & Info */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm">
-              🏫
-            </div>
+           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm overflow-hidden shrink-0 border border-slate-700">
+  {data.settings?.school_logo ? (
+    <img 
+      src={data.settings.school_logo} 
+      alt="شعار المدرسة" 
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    "🏫"
+  )}
+</div>
             <div className="text-right">
               <h1 className="text-xs font-black text-white">{data.settings.school_name_ar}</h1>
               <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
