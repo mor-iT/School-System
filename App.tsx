@@ -11,7 +11,7 @@ import StudentDashboard from "./StudentDashboard";
 import TeacherDashboard from "./TeacherDashboard";
 import DirectorDashboard from "./DirectorDashboard";
 import GamesPortal from "./GamesPortal";
-import { getSchoolData, saveSchoolData, resetSchoolData } from "./lib/firebase";
+import { getSchoolData, saveSchoolData, resetSchoolData } from "./firebase";
 
 // Recalculate ranks based on gamePoints
 function recalculateRanks(students: Student[]): Student[] {
