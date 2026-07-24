@@ -552,13 +552,16 @@ export default function App() {
           
           {/* Logo & Info */}
           <div className="flex items-center gap-3">
-<div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm overflow-hidden shrink-0 border border-slate-700">
-  <img 
-    src={data.settings?.logoPath || data.settings?.school_logo} 
-    alt="شعار المدرسة" 
-    className="w-full h-full object-cover"
-  />
-</div>     <div className="text-right">
+            {data.settings.logo_path ? (
+              <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
+                <img src={data.settings.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </div>
+            ) : (
+              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
+                🏫
+              </div>
+            )}
+            <div className="text-right">
               <h1 className="text-xs font-black text-white">{data.settings.school_name_ar}</h1>
               <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
             </div>
