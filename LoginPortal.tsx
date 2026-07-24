@@ -77,18 +77,23 @@ export default function LoginPortal({ schoolData, onLoginSuccess }: LoginPortalP
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
           
           <div className="z-10 space-y-6">
-            <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-xl shadow-lg shadow-blue-500/20 overflow-hidden shrink-0">
-  {(schoolData?.settings?.logoPath || schoolData?.settings?.school_logo) ? (
-    <img 
-      src={schoolData.settings.logoPath || schoolData.settings.school_logo} 
-      alt="شعار المدرسة" 
-      className="w-full h-full object-cover" 
-    />
-  ) : (
-    "🏫"
-  )}
-</div>
+          <div className="flex items-center gap-3">
+              {schoolData.settings.logo_path ? (
+                <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shadow-lg shrink-0">
+                  <img src={schoolData.settings.logo_path} alt="School Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                </div>
+              ) : (
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-xl shadow-lg shadow-blue-500/20 shrink-0">
+                  🏫
+                </div>
+              )}
+              <div className="text-right">
+                <h1 className="text-sm font-black tracking-wide text-white">البوابة الرقمية الموحدة</h1>
+                <p className="text-[10px] text-slate-400 mt-0.5">
+                  {schoolData.settings.school_name_ar || "مدرسة المتميزين النموذجية الذكية"}
+                </p>
+              </div>
+            </div>
 <div className="text-right">
   <h1 className="text-sm font-black tracking-wide text-white">البوابة الرقمية الموحدة</h1>
   <p className="text-[10px] text-slate-400 mt-0.5">
