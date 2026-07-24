@@ -550,22 +550,22 @@ export default function App() {
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-sm print:hidden">
         <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
           
-          {/* Logo & Info */}
-          <div className="flex items-center gap-3">
-            {data.settings.logo_path ? (
-              <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
-                <img src={data.settings.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-              </div>
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
-                🏫
-              </div>
-            )}
-            <div className="text-right">
-              <h1 className="text-xs font-black text-white">{data.settings.school_name_ar}</h1>
-              <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
-            </div>
-          </div>
+         {/* Logo & Info */}
+<div className="flex items-center gap-3">
+  {(data?.settings?.logoPath || data?.settings?.logo_path) ? (
+    <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
+      <img src={data.settings?.logoPath || data.settings?.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+    </div>
+  ) : (
+    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
+      🏫
+    </div>
+  )}
+  <div className="text-right">
+    <h1 className="text-xs font-black text-white">{data?.settings?.school_name_ar}</h1>
+    <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
+  </div>
+</div>
 
           {/* User Profile Status & Logout Shortcut */}
           <div className="flex items-center gap-3">
