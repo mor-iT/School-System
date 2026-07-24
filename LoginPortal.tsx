@@ -77,7 +77,7 @@ export default function LoginPortal({ schoolData, onLoginSuccess }: LoginPortalP
           <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl"></div>
           
           <div className="z-10 space-y-6">
-       <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3">
   {(schoolData?.settings?.logoPath || schoolData?.settings?.logo_path) ? (
     <div className="w-12 h-12 rounded-2xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shadow-lg shrink-0">
       <img 
@@ -93,9 +93,11 @@ export default function LoginPortal({ schoolData, onLoginSuccess }: LoginPortalP
     </div>
   )}
   <div className="text-right">
-    <h1 className="text-sm font-black tracking-wide text-white">البوابة الرقمية الموحدة</h1>
+    <h1 className="text-sm font-black tracking-wide text-white">
+      {schoolData?.settings?.school_name_ar || "البوابة الرقمية الموحدة"}
+    </h1>
     <p className="text-[10px] text-slate-400 mt-0.5">
-      {schoolData?.settings?.school_name_ar || "مدرسة المتميزين النموذجية الذكية"}
+      البوابة الأكاديمية والتربوية الشاملة والموحدة
     </p>
   </div>
 </div>
@@ -193,9 +195,9 @@ export default function LoginPortal({ schoolData, onLoginSuccess }: LoginPortalP
           <div className="mt-8 pt-6 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
             <span className="flex items-center gap-1">
               <Landmark className="w-3 h-3" />
-              <span>وزارة التربية والتعليم العالي</span>
+              <span>Al-Imamain Al-Jawadain School</span>
             </span>
-            <span>رابط مشفر آمن بنظام SSL 🔒</span>
+            <span>بأدارة الشيخ عباس التميمي واقربائه</span>
           </div>
         </div>
 
