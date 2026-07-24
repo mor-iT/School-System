@@ -197,7 +197,7 @@ export default function LoginPortal({ schoolData, onLoginSuccess }: LoginPortalP
               <Landmark className="w-3 h-3" />
               <span>Al-Imamain Al-Jawadain School</span>
             </span>
-            <span>بأدارة الشيخ عباس التميمي واقربائه</span>
+            <span></span>
           </div>
         </div>
 
