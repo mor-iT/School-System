@@ -23,7 +23,7 @@ const INITIAL_SCHOOL_DATA: SchoolData = {
   settings: {
     school_name_ar: "مدرسة الإمامين الجوادين (عليهما السلام) الدينية للبراعم والأولاد",
     school_name_en: "AAl-Imamain Al-Jawadain School",
-    logo_path: "",
+    logo_path: "<a href="https://ibb.co/qMsgPGJc"><img src="https://i.ibb.co/jvMw1KJQ/photo-2026-05-22-17-42-26.jpg" alt="photo-2026-05-22-17-42-26" border="0"></a>",
     alert_percent_1: 5,
     alert_percent_2: 10,
     alert_percent_3: 15
