@@ -589,14 +589,7 @@ export default function App() {
             )}
 
             {isRefreshing && <span className="text-[9px] text-slate-500 animate-pulse font-semibold">تحديث...</span>}
-            <button
-              onClick={handleResetDatabase}
-              className="text-[10px] text-slate-400 hover:text-red-400 bg-slate-800/60 hover:bg-slate-800 px-2.5 py-1.5 rounded-lg border border-slate-700/50 flex items-center gap-1 transition"
-              title="إعادة تعيين البيانات للمصنع"
-            >
-              <RotateCcw className="w-3 h-3" />
-              إعادة تهيئة
-         
+           
           </div>
 
         </div>
