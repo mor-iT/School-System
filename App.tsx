@@ -596,7 +596,7 @@ export default function App() {
             >
               <RotateCcw className="w-3 h-3" />
               إعادة تهيئة
-            </button>
+         
           </div>
 
         </div>
