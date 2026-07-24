@@ -549,7 +549,7 @@ export default function DirectorDashboard({
               }`}
             >
               <Sliders className="w-4 h-4" />
-              <span>إعدادات مدرسة بولونيا</span>
+              <span>إعدادات المدرسة </span>
             </button>
 
             <button
