@@ -21,9 +21,9 @@ const db = initializeFirestore(app, {}, "ai-studio-schoolmanagement-6bf5f133-ba9
 // Default initial database structure
 const INITIAL_SCHOOL_DATA: SchoolData = {
   settings: {
-    school_name_ar: "مدرسة المتميزين النموذجية الذكية",
-    school_name_en: "Al-Motamayizeen Model Smart School",
-    logo_path: "https://cdn-icons-png.flaticon.com/512/807/807478.png",
+    school_name_ar: "مدرسة الإمامين الجوادين (عليهما السلام) الدينية للبراعم والأولاد",
+    school_name_en: "AAl-Imamain Al-Jawadain School",
+    logo_path: "",
     alert_percent_1: 5,
     alert_percent_2: 10,
     alert_percent_3: 15
