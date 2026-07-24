@@ -1,7 +1,8 @@
 {
-   settings: {school_name_ar: "مدرسة الإمامين الجوادين (عليهما السلام) الدينية للبراعم والأولاد",
-    school_name_en: "Al-Imamain Al-Jawadain School",
-    logo_path: "https://i.ibb.co/jvMw1KJQ/photo-2026-05-22-17-42-26.jpg",
+  "settings": {
+    "school_name_ar": "مدرسة الإمامين الجوادين (عليهما السلام) الدينية للبراعم والأولاد",
+    "school_name_en": "Al-Imamain Al-Jawadain School",
+    "logo_path": "https://i.ibb.co/jvMw1KJQ/photo-2026-05-22-17-42-26.jpg",
     "alert_percent_1": 5,
     "alert_percent_2": 10,
     "alert_percent_3": 15
@@ -14,7 +15,7 @@
       "name": "المدير العام",
       "email": "director@school.com",
       "password": "director2026",
-      "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=200"
+      "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=300"
     }
   ],
   "classes": [],
