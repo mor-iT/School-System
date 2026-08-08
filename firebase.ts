@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { initializeFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { SchoolData } from "./types"; // تم تعديل المسار ليتناسب مع البنية المسطحة
+// تم تعديل الاستدعاء ليتناسب مع رفعك المسطح مباشرة على GitHub
+import { SchoolData } from "./types";
 
 // Firebase Configuration from firebase-applet-config.json
 const firebaseConfig = {
