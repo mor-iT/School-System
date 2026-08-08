@@ -4,14 +4,15 @@
  */
 
 import React, { useState, useEffect } from "react";
-import { RefreshCw, RotateCcw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { SchoolData, Student, Teacher, Director, ClassSession, Assignment, Announcement, AttendanceRecord, GradeRecord, SchoolSettings } from "./types";
-import LoginPortal from "./LoginPortal";
-import StudentDashboard from "./StudentDashboard";
-import TeacherDashboard from "./TeacherDashboard";
-import DirectorDashboard from "./DirectorDashboard";
-import GamesPortal from "./GamesPortal";
-import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./firebase";
+import LoginPortal from "./LoginPortal";              // مسار معدل للبنية المسطحة
+import StudentDashboard from "./StudentDashboard";      // مسار معدل للبنية المسطحة
+import TeacherDashboard from "./TeacherDashboard";      // مسار معدل للبنية المسطحة
+import DirectorDashboard from "./DirectorDashboard";    // مسار معدل للبنية المسطحة
+import GamesPortal from "./GamesPortal";                // مسار معدل للبنية المسطحة
+import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./firebase"; // مسار معدل للبنية المسطحة
+
 // Recalculate ranks based on gamePoints
 function recalculateRanks(students: Student[]): Student[] {
   const sorted = [...students].sort((a, b) => b.gamePoints - a.gamePoints);
@@ -42,7 +43,6 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [flashMsg, setFlashMsg] = useState<string | null>(null);
-  // --- أضف الأسطر التالية هنا ---
   const [isOnlineWithFirebase, setIsOnlineWithFirebase] = useState<boolean | null>(null);
 
   // Centralized local database save function with sync tracking
@@ -61,7 +61,6 @@ export default function App() {
       triggerFlashMessage("⚠️ خطأ: تعذر الاتصال بالسحابة للرفع. تم الحفظ محلياً فقط!");
     }
   };
-  // ---------------------------------
 
   // Load school data on mount
   useEffect(() => {
@@ -75,6 +74,7 @@ export default function App() {
       const freshData = await getSchoolData();
       setData(freshData);
       setIsOnlineWithFirebase(!!freshData._isFromCloud);
+      
       // Keep local session user in sync with latest DB modifications if logged in
       if (currentUser && userRole) {
         if (userRole === "student") {
@@ -524,19 +524,6 @@ export default function App() {
     }
   };
 
-  const handleResetDatabase = async () => {
-    if (window.confirm("هل أنت متأكد من رغبتك في إعادة تعيين البيانات وحذف كافة الإضافات التجريبية؟")) {
-      try {
-        const freshData = await resetSchoolData();
-        setData(freshData);
-        handleLogout();
-        triggerFlashMessage("تمت إعادة تعيين قاعدة البيانات بنجاح!");
-      } catch (err) {
-        console.error("Error resetting database:", err);
-      }
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-6 text-center">
@@ -569,26 +556,26 @@ export default function App() {
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-sm print:hidden">
         <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
           
-         {/* Logo & Info */}
-<div className="flex items-center gap-3">
-  {(data?.settings?.logoPath || data?.settings?.logo_path) ? (
-    <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
-      <img src={data.settings?.logoPath || data.settings?.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-    </div>
-  ) : (
-    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
-      🏫
-    </div>
-  )}
-  <div className="text-right">
-    <h1 className="text-xs font-black text-white">{data?.settings?.school_name_ar}</h1>
-    <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
-  </div>
-</div>
+          {/* Logo & Info */}
+          <div className="flex items-center gap-3">
+            {(data?.settings?.logoPath || data?.settings?.logo_path) ? (
+              <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
+                <img src={data.settings?.logoPath || data.settings?.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </div>
+            ) : (
+              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
+                🏫
+              </div>
+            )}
+            <div className="text-right">
+              <h1 className="text-xs font-black text-white">{data?.settings?.school_name_ar}</h1>
+              <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
+            </div>
+          </div>
 
           {/* User Profile Status & Logout Shortcut */}
           <div className="flex items-center gap-3">
-            {/* --- أضف كود شارة المزامنة الحية المحدثة هنا --- */}
+            {/* Realtime Database Sync Badge */}
             {isOnlineWithFirebase !== null && (
               <div 
                 className={`flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[9px] font-bold ${
@@ -602,9 +589,7 @@ export default function App() {
                 <span>{isOnlineWithFirebase ? "سحابي متصل" : "محلي مؤقت"}</span>
               </div>
             )}
-            {/* ----------------------------------------------- */}
 
-            {currentUser ? (
             {currentUser ? (
               <div className="flex items-center gap-2 bg-slate-800 py-1 px-3 rounded-lg border border-slate-700">
                 <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 border border-slate-600">
@@ -625,7 +610,6 @@ export default function App() {
             )}
 
             {isRefreshing && <span className="text-[9px] text-slate-500 animate-pulse font-semibold">تحديث...</span>}
-           
           </div>
 
         </div>
