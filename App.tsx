@@ -6,12 +6,13 @@
 import React, { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
 import { SchoolData, Student, Teacher, Director, ClassSession, Assignment, Announcement, AttendanceRecord, GradeRecord, SchoolSettings } from "./types";
-import LoginPortal from "./LoginPortal";              // مسار معدل للبنية المسطحة
-import StudentDashboard from "./StudentDashboard";      // مسار معدل للبنية المسطحة
-import TeacherDashboard from "./TeacherDashboard";      // مسار معدل للبنية المسطحة
-import DirectorDashboard from "./DirectorDashboard";    // مسار معدل للبنية المسطحة
-import GamesPortal from "./GamesPortal";                // مسار معدل للبنية المسطحة
-import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./firebase"; // مسار معدل للبنية المسطحة
+// تعديل كافة الاستدعاءات لتكون مسطحة ومباشرة من نفس المجلد على مستودع GitHub الخاص بك
+import LoginPortal from "./LoginPortal";
+import StudentDashboard from "./StudentDashboard";
+import TeacherDashboard from "./TeacherDashboard";
+import DirectorDashboard from "./DirectorDashboard";
+import GamesPortal from "./GamesPortal";
+import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./firebase";
 
 // Recalculate ranks based on gamePoints
 function recalculateRanks(students: Student[]): Student[] {
