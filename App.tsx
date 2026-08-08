@@ -11,8 +11,7 @@ import StudentDashboard from "./StudentDashboard";
 import TeacherDashboard from "./TeacherDashboard";
 import DirectorDashboard from "./DirectorDashboard";
 import GamesPortal from "./GamesPortal";
-import { getSchoolData, saveSchoolData, resetSchoolData } from "./firebase";
-
+import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./firebase";
 // Recalculate ranks based on gamePoints
 function recalculateRanks(students: Student[]): Student[] {
   const sorted = [...students].sort((a, b) => b.gamePoints - a.gamePoints);
