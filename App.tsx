@@ -42,6 +42,27 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [flashMsg, setFlashMsg] = useState<string | null>(null);
+  const [flashMsg, setFlashMsg] = useState<string | null>(null);
+  // --- أضف الأسطر التالية هنا ---
+  const [isOnlineWithFirebase, setIsOnlineWithFirebase] = useState<boolean | null>(null);
+
+  // Centralized local database save function with sync tracking
+  const saveSchoolData = async (newData: SchoolData) => {
+    try {
+      const res = await dbSaveSchoolData(newData);
+      if (res.success) {
+        setIsOnlineWithFirebase(true);
+      } else {
+        setIsOnlineWithFirebase(false);
+        triggerFlashMessage("⚠️ تنبيه: تم حفظ التغييرات محلياً بالجهاز فقط بسبب انقطاع الاتصال بالسحابة!");
+      }
+    } catch (err) {
+      console.error("Local save wrapper error:", err);
+      setIsOnlineWithFirebase(false);
+      triggerFlashMessage("⚠️ خطأ: تعذر الاتصال بالسحابة للرفع. تم الحفظ محلياً فقط!");
+    }
+  };
+  // ---------------------------------
 
   // Load school data on mount
   useEffect(() => {
