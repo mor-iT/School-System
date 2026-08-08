@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { initializeFirestore, doc, getDoc, setDoc } from "firebase/firestore";
-import { SchoolData } from "../types";
+import { SchoolData } from "./types"; // تم تعديل المسار ليتناسب مع البنية المسطحة
 
 // Firebase Configuration from firebase-applet-config.json
 const firebaseConfig = {
@@ -15,12 +15,15 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore using the specific database ID from the config
-const db = initializeFirestore(app, {}, "ai-studio-schoolmanagement-6bf5f133-ba9c-44f4-94fb-6a28c0168cab");
+// Initialize Firestore using the specific database ID from the config and force long-polling for high reliability on mobile networks
+const db = initializeFirestore(app, {
+  experimentalForceLongPolling: true
+}, "ai-studio-schoolmanagement-6bf5f133-ba9c-44f4-94fb-6a28c0168cab");
 
 // Default initial database structure
 const INITIAL_SCHOOL_DATA: SchoolData = {
-  settings: {school_name_ar: "مدرسة الإمامين الجوادين (عليهما السلام) الدينية للبراعم والأولاد",
+  settings: {
+    school_name_ar: "مدرسة الإمامين الجوادين (عليهما السلام) الدينية للبراعم والأولاد",
     school_name_en: "Al-Imamain Al-Jawadain School",
     logo_path: "https://i.ibb.co/jvMw1KJQ/photo-2026-05-22-17-42-26.jpg",
     alert_percent_1: 5,
@@ -58,7 +61,7 @@ function getLocalFallback(): SchoolData {
     const local = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (local) {
       const parsed = JSON.parse(local) as SchoolData;
-      return {
+      const combined = {
         ...INITIAL_SCHOOL_DATA,
         ...parsed,
         students: parsed.students || [],
@@ -76,6 +79,13 @@ function getLocalFallback(): SchoolData {
           ...(parsed.settings || {})
         }
       };
+      if (combined.settings.school_name_ar === "مدرسة المتميزين النموذجية الذكية" || !combined.settings.school_name_ar) {
+        combined.settings.school_name_ar = INITIAL_SCHOOL_DATA.settings.school_name_ar;
+        combined.settings.school_name_en = INITIAL_SCHOOL_DATA.settings.school_name_en;
+        combined.settings.logo_path = INITIAL_SCHOOL_DATA.settings.logo_path;
+        combined.settings.logoPath = INITIAL_SCHOOL_DATA.settings.logo_path;
+      }
+      return combined;
     }
   } catch (e) {
     console.error("Failed to parse local fallback data:", e);
@@ -96,7 +106,7 @@ function saveLocalFallback(data: SchoolData) {
  * Fetches the school data from Firestore.
  * If the connection fails, it silently falls back to local storage (or default mock data).
  */
-export async function getSchoolData(): Promise<SchoolData> {
+export async function getSchoolData(): Promise<SchoolData & { _isFromCloud?: boolean }> {
   try {
     const docSnap = await getDoc(schoolDocRef);
     if (docSnap.exists()) {
@@ -119,23 +129,48 @@ export async function getSchoolData(): Promise<SchoolData> {
           ...(data.settings || {})
         }
       };
+
+      if (combined.settings.school_name_ar === "مدرسة المتميزين النموذجية الذكية" || !combined.settings.school_name_ar) {
+        combined.settings.school_name_ar = INITIAL_SCHOOL_DATA.settings.school_name_ar;
+        combined.settings.school_name_en = INITIAL_SCHOOL_DATA.settings.school_name_en;
+        combined.settings.logo_path = INITIAL_SCHOOL_DATA.settings.logo_path;
+        combined.settings.logoPath = INITIAL_SCHOOL_DATA.settings.logo_path;
+        // Save the updated configuration to Firestore
+        setDoc(schoolDocRef, combined).catch(console.error);
+      }
+
       // Save local backup for future offline uses
       saveLocalFallback(combined);
-      return combined;
+      return {
+        ...combined,
+        _isFromCloud: true
+      };
     } else {
       // Document does not exist, initialize it in Firestore & LocalStorage
       try {
         await setDoc(schoolDocRef, INITIAL_SCHOOL_DATA);
+        saveLocalFallback(INITIAL_SCHOOL_DATA);
+        return {
+          ...INITIAL_SCHOOL_DATA,
+          _isFromCloud: true
+        };
       } catch (e) {
         console.warn("Failed to write initial document to Firestore, will use local storage only:", e);
+        saveLocalFallback(INITIAL_SCHOOL_DATA);
+        return {
+          ...INITIAL_SCHOOL_DATA,
+          _isFromCloud: false
+        };
       }
-      saveLocalFallback(INITIAL_SCHOOL_DATA);
-      return INITIAL_SCHOOL_DATA;
     }
   } catch (error) {
     console.warn("Firestore connectivity failed. Falling back to Local Storage data. Error details:", error);
     // Return local storage fallback, or initial data if empty
-    return getLocalFallback();
+    const local = getLocalFallback();
+    return {
+      ...local,
+      _isFromCloud: false
+    };
   }
 }
 
@@ -143,25 +178,19 @@ export async function getSchoolData(): Promise<SchoolData> {
  * Saves the updated school data to Firestore.
  * If Firestore fails, saves it locally to guarantee the app remains functional.
  */
-export async function saveSchoolData(newData: SchoolData): Promise<void> {
+export async function saveSchoolData(newData: SchoolData): Promise<{ success: boolean; error?: string }> {
   // Always save locally first to guarantee persistence in fallback mode
   saveLocalFallback(newData);
   try {
-    await setDoc(schoolDocRef, newData);
-  } catch (error) {
+    // Strip out any metadata properties before writing to firestore (e.g. _isFromCloud)
+    const cleanedData = JSON.parse(JSON.stringify(newData));
+    if (cleanedData._isFromCloud !== undefined) {
+      delete cleanedData._isFromCloud;
+    }
+    await setDoc(schoolDocRef, cleanedData);
+    return { success: true };
+  } catch (error: any) {
     console.warn("Firestore update failed. Data saved locally to browser. Error details:", error);
+    return { success: false, error: error?.message || String(error) };
   }
-}
-
-/**
- * Resets the school data to the default clean state.
- */
-export async function resetSchoolData(): Promise<SchoolData> {
-  saveLocalFallback(INITIAL_SCHOOL_DATA);
-  try {
-    await setDoc(schoolDocRef, INITIAL_SCHOOL_DATA);
-  } catch (error) {
-    console.warn("Firestore reset failed. Reset applied locally to browser. Error details:", error);
-  }
-  return INITIAL_SCHOOL_DATA;
 }
