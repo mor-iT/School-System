@@ -42,7 +42,6 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [flashMsg, setFlashMsg] = useState<string | null>(null);
-  const [flashMsg, setFlashMsg] = useState<string | null>(null);
   // --- أضف الأسطر التالية هنا ---
   const [isOnlineWithFirebase, setIsOnlineWithFirebase] = useState<boolean | null>(null);
 
@@ -75,7 +74,7 @@ export default function App() {
     try {
       const freshData = await getSchoolData();
       setData(freshData);
-      
+      setIsOnlineWithFirebase(!!freshData._isFromCloud);
       // Keep local session user in sync with latest DB modifications if logged in
       if (currentUser && userRole) {
         if (userRole === "student") {
@@ -589,6 +588,23 @@ export default function App() {
 
           {/* User Profile Status & Logout Shortcut */}
           <div className="flex items-center gap-3">
+            {/* --- أضف كود شارة المزامنة الحية المحدثة هنا --- */}
+            {isOnlineWithFirebase !== null && (
+              <div 
+                className={`flex items-center gap-1.5 py-1 px-2.5 rounded-full text-[9px] font-bold ${
+                  isOnlineWithFirebase 
+                    ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30" 
+                    : "bg-amber-500/10 text-amber-400 border border-amber-500/30 animate-pulse"
+                }`}
+                title={isOnlineWithFirebase ? "قاعدة البيانات السحابية متصلة ومزامنة" : "قاعدة البيانات السحابية غير متصلة - التخزين محلي مؤقتاً"}
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${isOnlineWithFirebase ? "bg-emerald-400" : "bg-amber-400 animate-ping"}`} />
+                <span>{isOnlineWithFirebase ? "سحابي متصل" : "محلي مؤقت"}</span>
+              </div>
+            )}
+            {/* ----------------------------------------------- */}
+
+            {currentUser ? (
             {currentUser ? (
               <div className="flex items-center gap-2 bg-slate-800 py-1 px-3 rounded-lg border border-slate-700">
                 <div className="w-5 h-5 rounded-full overflow-hidden shrink-0 border border-slate-600">
