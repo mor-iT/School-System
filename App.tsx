@@ -6,13 +6,12 @@
 import React, { useState, useEffect } from "react";
 import { RefreshCw } from "lucide-react";
 import { SchoolData, Student, Teacher, Director, ClassSession, Assignment, Announcement, AttendanceRecord, GradeRecord, SchoolSettings } from "./types";
-// تعديل كافة الاستدعاءات لتكون مسطحة ومباشرة من نفس المجلد على مستودع GitHub الخاص بك
-import LoginPortal from "./LoginPortal";
-import StudentDashboard from "./StudentDashboard";
-import TeacherDashboard from "./TeacherDashboard";
-import DirectorDashboard from "./DirectorDashboard";
-import GamesPortal from "./GamesPortal";
-import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./firebase";
+import LoginPortal from "./components/LoginPortal";
+import StudentDashboard from "./components/StudentDashboard";
+import TeacherDashboard from "./components/TeacherDashboard";
+import DirectorDashboard from "./components/DirectorDashboard";
+import GamesPortal from "./components/GamesPortal";
+import { getSchoolData, saveSchoolData as dbSaveSchoolData } from "./lib/firebase";
 
 // Recalculate ranks based on gamePoints
 function recalculateRanks(students: Student[]): Student[] {
@@ -211,6 +210,61 @@ export default function App() {
       triggerFlashMessage("تم تسجيل وحفظ الغياب بنجاح");
     } catch (err) {
       console.error("Error saving attendance:", err);
+    }
+  };
+
+  const handleSaveBulkAttendance = async (records: { studentId: string; subjectId: string; date: string; status: "present" | "late" | "absent"; teacherName: string }[]) => {
+    if (!data) return;
+    try {
+      let updatedAttendance = [...data.attendance];
+      const studentIdsToUpdate = new Set<string>();
+
+      records.forEach(rec => {
+        studentIdsToUpdate.add(rec.studentId);
+        const existingIdx = updatedAttendance.findIndex(
+          a => a.studentId === rec.studentId && a.subjectId === rec.subjectId && a.date === rec.date
+        );
+
+        if (existingIdx !== -1) {
+          updatedAttendance[existingIdx] = {
+            ...updatedAttendance[existingIdx],
+            status: rec.status,
+            teacherName: rec.teacherName
+          };
+        } else {
+          updatedAttendance.push({
+            id: "att-" + Date.now() + "-" + Math.floor(Math.random() * 1000000) + "-" + rec.studentId.substring(0, 5),
+            studentId: rec.studentId,
+            subjectId: rec.subjectId,
+            date: rec.date,
+            status: rec.status,
+            teacherName: rec.teacherName
+          });
+        }
+      });
+
+      // Recalculate attendance stats for all students involved
+      const updatedStudents = data.students.map(s => {
+        if (studentIdsToUpdate.has(s.id)) {
+          const studentAtts = updatedAttendance.filter(a => a.studentId === s.id);
+          const absentCount = studentAtts.filter(a => a.status === "absent").length;
+          const totalRecords = studentAtts.length || 1;
+          const presentCount = studentAtts.filter(a => a.status === "present" || a.status === "late").length;
+          return {
+            ...s,
+            absentDaysCount: absentCount,
+            attendancePercentage: Math.round((presentCount / totalRecords) * 100)
+          };
+        }
+        return s;
+      });
+
+      const updatedData = { ...data, attendance: updatedAttendance, students: updatedStudents };
+      await saveSchoolData(updatedData);
+      setData(updatedData);
+      triggerFlashMessage("تم تسجيل وحفظ الغياب بالكامل بنجاح");
+    } catch (err) {
+      console.error("Error saving bulk attendance:", err);
     }
   };
 
@@ -557,22 +611,22 @@ export default function App() {
       <header className="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-50 shadow-sm print:hidden">
         <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
           
-          {/* Logo & Info */}
-          <div className="flex items-center gap-3">
-            {(data?.settings?.logoPath || data?.settings?.logo_path) ? (
-              <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
-                <img src={data.settings?.logoPath || data.settings?.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-              </div>
-            ) : (
-              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
-                🏫
-              </div>
-            )}
-            <div className="text-right">
-              <h1 className="text-xs font-black text-white">{data?.settings?.school_name_ar}</h1>
-              <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
-            </div>
-          </div>
+         {/* Logo & Info */}
+<div className="flex items-center gap-3">
+  {(data?.settings?.logoPath || data?.settings?.logo_path) ? (
+    <div className="w-9 h-9 rounded-xl overflow-hidden bg-white flex items-center justify-center border border-slate-700 shrink-0">
+      <img src={data.settings?.logoPath || data.settings?.logo_path} alt="Logo" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+    </div>
+  ) : (
+    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center font-black text-sm shrink-0">
+      🏫
+    </div>
+  )}
+  <div className="text-right">
+    <h1 className="text-xs font-black text-white">{data?.settings?.school_name_ar}</h1>
+    <p className="text-[9px] text-slate-400 mt-0.5">البوابة الأكاديمية والتربوية الشاملة والموحدة</p>
+  </div>
+</div>
 
           {/* User Profile Status & Logout Shortcut */}
           <div className="flex items-center gap-3">
@@ -672,6 +726,7 @@ export default function App() {
                 onSaveGrade={handleSaveGrade}
                 onDeleteGrade={handleDeleteGrade}
                 onSaveAttendance={handleSaveAttendance}
+                onSaveBulkAttendance={handleSaveBulkAttendance}
                 onLogout={handleLogout}
               />
             )}
