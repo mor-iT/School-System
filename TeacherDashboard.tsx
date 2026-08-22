@@ -26,6 +26,7 @@ interface TeacherDashboardProps {
   onSaveGrade: (grade: { studentId: string; subjectId: string; examType: "daily" | "monthly" | "final" | "course_work"; score: number }) => void;
   onDeleteGrade: (id: string) => void;
   onSaveAttendance: (att: { studentId: string; subjectId: string; date: string; status: "present" | "late" | "absent"; teacherName: string }) => void;
+  onSaveBulkAttendance?: (records: { studentId: string; subjectId: string; date: string; status: "present" | "late" | "absent"; teacherName: string }[]) => void;
   onLogout?: () => void;
 }
 
@@ -45,6 +46,7 @@ export default function TeacherDashboard({
   onSaveGrade,
   onDeleteGrade,
   onSaveAttendance,
+  onSaveBulkAttendance,
   onLogout
 }: TeacherDashboardProps) {
   const [activeTab, setActiveTab] = useState<"attendance" | "grades" | "assignments" | "announcements">("attendance");
@@ -111,16 +113,25 @@ export default function TeacherDashboard({
   };
 
   const handleSaveAllAttendance = () => {
-    filteredStudents.forEach(student => {
+    const recordsToSave = filteredStudents.map(student => {
       const status = attendanceStatus[student.id] || "present"; // default to present
-      onSaveAttendance({
+      return {
         studentId: student.id,
         subjectId: currentSubjectId,
         date: attendanceDate,
         status,
         teacherName: teacher.name
-      });
+      };
     });
+
+    if (onSaveBulkAttendance) {
+      onSaveBulkAttendance(recordsToSave);
+    } else {
+      // Fallback
+      recordsToSave.forEach(rec => {
+        onSaveAttendance(rec);
+      });
+    }
 
     setAttendanceSuccess("تم حفظ كشف الغياب والحضور بالكامل بنجاح للفصل الدراسي!");
     setTimeout(() => setAttendanceSuccess(null), 4000);
@@ -619,7 +630,7 @@ export default function TeacherDashboard({
                               <button
                                 onClick={() => { if (confirm("هل أنت متأكد من حذف السعي المباشر؟")) onDeleteGrade(directCourseWork.id); }}
                                 className="text-red-500 hover:text-red-700 p-0.5"
-                                title="حذف الدرجة"
+                                title="حذف السعي المباشر"
                               >
                                 <Trash2 className="w-3 h-3" />
                               </button>
