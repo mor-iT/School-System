@@ -276,9 +276,10 @@ export default function DirectorDashboard({
 
   // Calculate Bologna Warnings per subject for transcript viewer
   const getStudentTranscript = (student: Student) => {
-    const studentAtt = attendance.filter(a => a.studentId === student.id);
-    const uniqueSubjects = classes.map(c => ({ id: c.subjectId, name: c.subject }));
-
+   const studentAtt = attendance.filter(a => a.studentId === student.id);
+    const uniqueSubjects = subjectsList && subjectsList.length > 0
+      ? subjectsList.filter(s => s.classId === student.gradeLevel).map(s => ({ id: s.id, name: s.name }))
+      : classes.map(c => ({ id: c.subjectId, name: c.subject }));
     return uniqueSubjects.map(sub => {
       const records = studentAtt.filter(a => a.subjectId === sub.id);
       const totalRecords = records.length;
